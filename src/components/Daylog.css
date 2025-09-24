@@ -1,0 +1,277 @@
+.day-log{
+    position: relative;
+    display: grid;
+    grid-template-areas: 'title message'
+                         'date message'
+                         'file file';
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 1rem 2rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: .5rem;
+    background-color: rgb(246, 255, 236);
+
+    &:nth-child(even) {
+    background-color: rgb(255, 242, 238);
+  }
+}
+
+.edit-container{
+    display: grid;
+    border: none;
+    grid-template-areas: 'title message'
+                         'date message'
+                         'file message';
+    grid-template-columns: 1fr 8fr;
+    grid-template-rows: auto auto auto;
+    gap: 1rem 2rem;
+
+    .edit-title{
+        padding: 0.5rem;
+        grid-area: title;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border: none;
+        border-bottom: 2px solid #ccc;
+    }
+    .edit-date{
+        padding: 0.5rem;
+        grid-area: date;
+        font-size: 1.1rem;
+        font-weight: semibold;
+        border: none;
+        border-bottom: 2px solid #ccc;
+    }
+    .edit-message{
+        margin-top: 3rem;
+        grid-area: message;
+        font-size: 1.1rem;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        padding: 0.5rem;
+        width: 100%;
+        min-height: 125px;
+    }
+
+    .edit-file{
+        grid-area: file;
+        font-size: 1rem;
+        max-width: 1280px;
+        margin: 0 auto;
+        border: none;
+    }
+}
+
+.edit-buttons{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+
+    .save-button{
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: .5rem;
+        padding: .5rem 1rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-right: .5rem;
+
+        &:hover {
+            background-color: #45a049;
+        }
+    }
+
+    .cancel-button{
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: .5rem;
+        padding: .5rem 1rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+            background-color: #da190b;
+        }
+    }
+}
+
+
+.title{
+    grid-area: title;
+    font-size: 1.25rem;
+    font-weight: bold;
+    border: none;
+}
+.date{
+    grid-area: date;
+    font-size: 1.1rem;
+    font-weight: semibold;
+}
+.message{
+    margin-top: 2rem;
+    grid-area: message;
+    font-size: 1.1rem;
+    font-weight: semibold;
+    white-space: pre-wrap;
+    resize: none;
+}
+.file{
+    grid-area: file;
+    font-weight: semibold;
+    max-width: 1280px;
+    max-height: 400px;
+    margin: 0rem auto;
+
+    .image{
+        max-width: 100%;
+        height: 100%;
+        border-radius: .5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: block;
+        margin: 0rem auto;
+        transition: transform 0.3s;
+        &:hover {
+            transform: scale(1.005);
+            cursor: pointer;
+        }
+    }
+}
+
+.image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.image-modal-content {
+    background: #fff;
+    border-radius: 1rem;
+    max-width: 1920px;
+    width: 90vw;
+    max-height: 90vh;
+    padding: 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.image-modal-content img {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: .5rem;
+}
+
+.close-modal {
+    margin-top: 1rem;
+    background: #4a90e2;
+    color: #fff;
+    border: none;
+    border-radius: .5rem;
+    padding: .5rem 1.5rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.close-modal:hover {
+    background: #357ab8;
+}
+
+.delete-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #e60000;
+    }
+}
+
+.confirm-delete-container {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: .5rem;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+
+    p {
+        margin: 0;
+        font-size: 1.0rem;
+        font-weight: bold;
+    }
+
+    .confirm-button, .cancel-button {
+        padding: .5rem 1rem;
+        border: none;
+        border-radius: .5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .confirm-button {
+        background-color: #ff4d4d;
+        color: white;
+
+        &:hover {
+            background-color: #e60000;
+        }
+    }
+
+    .cancel-button {
+        background-color: #ccc;
+
+        &:hover {
+            background-color: #999;
+        }
+    }
+}   
+
+.edit-button {
+    position: absolute;
+    top: 1rem;
+    right: 3.5rem;
+    background-color: #654dff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #0040ff;
+    }
+}

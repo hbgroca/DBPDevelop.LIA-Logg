@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Första dagen",
+    "date": "2025-09-10",
+    "message": "Idag har vi tilldelats våra grupper och några av oss var snabbt inne på teams och fick kontakt. Efter bara några minuter av allmänt snack så kändes det som att vi kommer att fungera bra ihop i ett team. \nVi var eniga om att använda GitHub Projects, Azure molntjänster, .NET Rest API samt React som frontend. Ganska logist när det är dom här delarna vi använt under våran utbildning. \n\nVi har hunnit med att skapa:\n- Discord kanal (Robin)\n- Skapat och strukturerat en organisation på GitHub. (Robin)\n- Hittat en design/layout att använda som grund när vi bygger frontend. (Erdem)\n- Satt upp SQL Server i Azure (Robin).\n\nVi delade upp oss i två grupper som skulle börja skriva user stories för Auth/Login och för Booking delen. \nGrupp 1 (Auth/Login):\n- Robin\n- Erdem\nGrupp 2(Booking):\n- Sanna\n- Jessica\n- David\n\nVi fick skrivet ganska många user stories innan hjärnan slutade att fungera. Här är dom jag kunde komma på:\n- Som användare vill jag kunna återställa mitt lösenord #5\n- Som användare vill jag kunna verifiera mig med Tvåfaktorsautentisering #10\n- Som användare vill jag kunna logga in med mitt Google konto #8\n- Som användare vill jag kunna logga in med mitt GitHub konto #6\n- Som användare vill jag kunna logga in med mitt Facebook konto # 7\n- Som användare vill jag kunna logga in med användarnamn och lösenord så att jag kan få åtkomst till mitt konto. #1\n- Som användare vill jag få ett verifikationskod via e-post när jag skapar ett nytt konto #13\n- Som administratör vill kunna hantera medlemmarnas tränings nivå #3\n- Som inloggad användare vill jag kunna se min profil #2\n- Som medlem vill jag kunna uppdatera mina personuppgifter (namn, telefon, adress) så att min information är aktuell. #1\n\nKänns som en riktigt produktiv dag.",
+    "file": "1757530833993-Screenshot 2025-09-10 150408.png"
+  },
+  {
+    "title": "Dag 2 - Fortsatt plannering",
+    "date": "2025-09-11",
+    "message": "Dagen börjar med daily standup möte där vi idag har med oss Ali, Tim och Rasmus utöver dom som var med dagen innan. Vi börjar med att visa det vi utfört hitintills för att dom ska vara med i matchen. \n\nEfter att dom blivit uppdaterade så delas Ali, Tim och Rasmus in i Grupp 3 för att börja skapa user stories för Betalningssystemet. Och Grupp 1 och 2 fortsätter där vi slutade igår. \n\nUser stories börjar bli många men det är fortfarande väldigt svårt att komma på alla tasks som ska vara i respektive story.",
+    "file": "1757592007213-Screenshot 2025-09-11 134808.png"
+  },
+  {
+    "title": "Dag 3 - Sprint planering påbörjas",
+    "date": "2025-09-12",
+    "message": "Idag så har vi tillsammans i gruppen skrivit och uppdaterat tasks till dom user stories som planeras till första sprinten. \n\nMålet med sprint 1 blir att skapa en sida som listar alla träningspass, en sida där man ser detaljerna för ett träningspass. Vi kommer dessutom även skapa en inloggningssida där man kan registrera sig och logga in. \n\nDet känns lagom som en första sprint och därefter har vi en bra grund för vidare utbyggnad av programmet.\n\nSprint 1 påbörjas på måndag och pågår till fredagen med litet demo på fredag eftermiddag. ",
+    "file": ""
+  },
+  {
+    "title": "Dag 4 - Kaos i mergen",
+    "date": "2025-09-15",
+    "message": "Första dagen som vi skriver kod! \n\nJag skrev kod för att kunna skicka iväg ett e-post via Azure Communication Service när en användare vill registrera ett nytt konto. När koden var klar så testade denna med hjälp av Postman.\nErdem påbörjade koden för inloggning och registrering och valde att använda sig av Microsoft Identity för en säker lösning.\n\nVi hade missat att skapa en .gitignore fil vilket resulterade i att massor av system filer också följde med upp på GitHub och vi fick en merge conflict på flera hundra olika filer. Puhh, det löste sig efter lite ändringar och implementering av .gitignore.\n\nJust det!... Tim har påbörjat en frontend design för inloggning och registrering. ",
+    "file": "1757940350182-Screenshot 2025-09-15 143918.png"
+  },
+  {
+    "title": "Dag 5 - Diagram för alla",
+    "date": "2025-09-16",
+    "message": "Idag har vi arbetat med sekvensdiagram och aktivitetsdiagram som vi fått lära oss ifrån Hasses video. \n\nJag satte ihop mina egna sekvensdiagram för inloggnings funktionen som tydligt visar det tänkte flödet, samt att jag skapade ett aktivitets diagram för inloggningssidan. Detta visar tydligt hur det ska gå till när man registrerar sig som ny användare samt loggar in.\n\nLite kvällskodning blev det också, knåpade ihop en stor del av frontend biten även om det inte var min del att göra. Ska vi ha en färdig MVP på fredag eftermiddag så bör vi snart ha en frontend klar åtminstone.",
+    "file": "1758024001329-Sekvensdiagram_SignIn.png"
+  },
+  {
+    "title": "Dag 6 - Den lever",
+    "date": "2025-09-17",
+    "message": "Under dagens arbete så har vi hunnit med att förbättra koden lite. Vi har dessutom publicerat Authservice delen och WorkoutSessions delen som Azure WebApps.\nSjälvklart så strulade det lite vilket resulterade i en del felsökning. Det visade sig att någon i gruppen hade nollställt databasen som gjorde att våra services inte ville fungera som tänkt, konstigt va?\n\n- Publicerat AuthService i Azure web app\n- Publicerat WorkoutSessions i Azure web app\n\nEftermiddagen gick åt att hjälpa det det andra teamet att påbörja kopplingen mellan frontend och backend. Tyvärr har inte Tim dykt upp idag med våran frontend. Förhoppningsvis så är han på plats imorgon annars får vi börja våran egen frontend så att vi kan ha klart inloggning och registrering tills på fredag när första sprinten ska vara klar.",
+    "file": "1758117608194-Screenshot 2025-09-17 153657.png"
+  },
+  {
+    "title": "Dag 7 - Tandläkare och Azure problem",
+    "date": "2025-09-18",
+    "message": "Dagen började med ett tandläkarbesök med dottern. En väldigt stressad tjej som ska få bedövning och dra ut en tand för första gången. \n\nVäl hemma igen så möts jag av panik i gruppen för att inga services eller databas fungerar. Okej?, snabbt in på Azure för att kolla läget. Det som inte fick hända hade hänt, fel prisplan på SQL databasen och alla krediterna är slut. Attans!\n\nSå några timmar på eftermiddagen gick åt att hjälpa Jessica att publicera hela kalaset på sitt Azure konto, förutom e-post delen för den kör vi via mitt privata konto.\n\nTim ligger lite efter på frontend biten så vi kommer spendera några timmar senare ikväll för att komma i fas med resterande delar.\n\n",
+    "file": "1758210851532-Screenshot 2025-09-18 175240.png"
+  },
+  {
+    "title": "Dag 8 - Demo One",
+    "date": "2025-09-19",
+    "message": "Dagen för våran första demo är kommen! Fick spenderat några timmar igår kväll med frontend biten så att vi kom i fas med planeringen. \n\nDemo gick bra, det går att se alla aktuella träningsklasser samt detaljerna för dessa. Man kan dessutom registrera sig som en ny användare och det går även att logga in och det sparas då en JWT token.\n\nInför nästa sprint så har vi planerat att bygga klart en profil sida och dess backend. Andra grupper ska ge sig på att skapa ett enklare bokningssystem.",
+    "file": "1758466745931-Screenshot 2025-09-21 165852.png"
+  },
+  {
+    "title": "Dag 9 - En ny start",
+    "date": "2025-09-22",
+    "message": "Ny vecka, ny sprint!\nUnder denna veckan så ska jag, Erdem och Tim skapa en profilsida samt backend för att kunna hämta, skapa och redigera en profil. \n\nAndra gruppen ska ge sig på att skapa en simplare boknings sida och backen till denna.\nRasmus och David ger sig på backend biten medans Sanna, Felicia och Jessica sköter frontend bitarna.\n",
+    "file": "1758545807004-Skarmbild_2025-09-22_110549.png"
+  }
+]
