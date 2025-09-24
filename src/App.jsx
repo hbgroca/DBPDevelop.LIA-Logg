@@ -1,24 +1,36 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import DayLog from './components/daylog'
+import DayLog from './components/Daylog'
 
 function App() {
   const [logs, setLogs] = useState([]);
+  const [allImages, setAllImages] = useState([]);
 
   // Load logs from JSON file through node js backend
   useEffect(() => {
+    // Load logs
     fetch('http://localhost:3001/download-json')
       .then(response => response.json())
       .then(data => {
         if (Array.isArray(data)) {
-          data.sort((a, b) => new Date(a.date) - new Date(b.date));
-          setLogs(data);
-          // console.log('Fetched logs:', data);
+          // Backwards compatibility: transform single file -> files[]
+          const normalized = data.map(l => ({
+            ...l,
+            files: Array.isArray(l.files) ? l.files : (l.file ? [l.file] : [])
+          }));
+          normalized.sort((a, b) => new Date(a.date) - new Date(b.date));
+          setLogs(normalized);
         } else {
           console.error('Data fetched is not an array:', data);
         }
       })
       .catch(error => console.error('Error fetching logs:', error));
+
+    // Load all images for gallery
+    fetch('http://localhost:3001/images-list')
+      .then(r => r.json())
+      .then(setAllImages)
+      .catch(err => console.error('Error fetching images list:', err));
   }, []);
 
 
@@ -41,31 +53,31 @@ if (!title || !date || !message) {
     const prevLogs = [...logs];
 
     const fileInput = document.querySelector('.file-input');
-    const file = fileInput.files[0];
+    const files = Array.from(fileInput.files || []);
     const newLog = {
-          title: document.querySelector('.title-input').value,
-          date: document.querySelector('.date-input').value,
-          message: document.querySelector('.message-input').value,
-          file: file ? file.name : ""
-        };
+      title: document.querySelector('.title-input').value,
+      date: document.querySelector('.date-input').value,
+      message: document.querySelector('.message-input').value,
+      files: []
+    };
     
 
     // Save image to server
-    if (file) {
+    if (files.length > 0) {
       const formData = new FormData();
-      formData.append('image', file);
+      files.forEach(f => formData.append('images', f));
 
-      await fetch('http://localhost:3001/upload-image', {
+      await fetch('http://localhost:3001/upload-images', {
         method: 'POST',
         body: formData
       })
         .then(response => response.json())
         .then(data => {
           console.log(data);
-          newLog.file = data.filename; 
+          newLog.files = data.filenames || [];
         })
         .catch(error => {
-          console.error('Error uploading image:', error);
+          console.error('Error uploading images:', error);
         });
     }
 
@@ -80,6 +92,12 @@ if (!title || !date || !message) {
     prevLogs.sort((a, b) => new Date(a.date) - new Date(b.date));
     setLogs(prevLogs);
     saveToJson({ xlogs: prevLogs });
+
+    // Refresh gallery
+    fetch('http://localhost:3001/images-list')
+      .then(r => r.json())
+      .then(setAllImages)
+      .catch(() => {});
   };
 
 
@@ -102,58 +120,57 @@ if (!title || !date || !message) {
   }
 
   const removeLog = (index) => {
+    const toRemove = logs[index];
     const updatedLogs = [...logs];
     updatedLogs.splice(index, 1);
     updatedLogs.sort((a, b) => new Date(a.date) - new Date(b.date));
     setLogs(updatedLogs);
     saveToJson({ xlogs: updatedLogs });
+
+    // Delete associated images (best-effort)
+    const files = Array.isArray(toRemove?.files) ? toRemove.files : (toRemove?.file ? [toRemove.file] : []);
+    files.forEach(name => {
+      fetch(`http://localhost:3001/delete-image/${encodeURIComponent(name)}`, { method: 'DELETE' }).catch(() => {});
+    });
   }
 
   // Save edited log and remove old image if it was changed
-  const saveEditedLog = async (index, editedLog, oldFile) => {
+  const saveEditedLog = async (index, editedLog, changes = { newFiles: [], removed: [] }) => {
     const updatedLogs = [...logs];
-    
-  
-    // Save new image to server if it was changed
-    if (editedLog.file && editedLog.file !== oldFile) {
-      const fileInput = document.querySelector('.edit-file');
-      const file = fileInput.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append('image', file);
-        
-        await fetch('http://localhost:3001/upload-image', {
-          method: 'POST',
-          body: formData
+
+    // Upload any newly added files
+    if (changes.newFiles && changes.newFiles.length > 0) {
+      const formData = new FormData();
+      changes.newFiles.forEach(f => formData.append('images', f));
+      await fetch('http://localhost:3001/upload-images', {
+        method: 'POST',
+        body: formData
+      })
+        .then(r => r.json())
+        .then(data => {
+          const uploaded = data.filenames || [];
+          editedLog.files = [...(editedLog.files || []), ...uploaded];
         })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data);
-            editedLog.file = data.filename;
-          })
-          .catch(error => {
-            console.error('Error uploading image:', error);
-          });
-      }
+        .catch(err => console.error('Error uploading images:', err));
     }
 
-    // If the file was changed, delete the old file from the server
-    if (oldFile && oldFile !== editedLog.file) {
-      fetch(`http://localhost:3001/delete-image/${oldFile}`, {
-        method: 'DELETE'
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-        })
-        .catch(error => {
-          console.error('Error deleting image:', error);
-        });
+    // Delete any removed files
+    if (changes.removed && changes.removed.length > 0) {
+      await Promise.allSettled(
+        changes.removed.map(name => fetch(`http://localhost:3001/delete-image/${encodeURIComponent(name)}`, { method: 'DELETE' }))
+      );
     }
+
     updatedLogs[index] = editedLog;
     updatedLogs.sort((a, b) => new Date(a.date) - new Date(b.date));
     setLogs(updatedLogs);
     saveToJson({ xlogs: updatedLogs });
+
+    // Refresh gallery
+    fetch('http://localhost:3001/images-list')
+      .then(r => r.json())
+      .then(setAllImages)
+      .catch(() => {});
   };
 
 
@@ -170,7 +187,15 @@ if (!title || !date || !message) {
 
         <div className="log-container">
           {logs.map((log, index) => (
-            <DayLog key={index} title={log.title} date={log.date} message={log.message} file={log.file} onDelete={() => removeLog(index)} onUpdate={(updatedLog) => saveEditedLog(index, updatedLog, log.file)} />
+            <DayLog
+              key={index}
+              title={log.title}
+              date={log.date}
+              message={log.message}
+              files={log.files}
+              onDelete={() => removeLog(index)}
+              onUpdate={(updatedLog, changes) => saveEditedLog(index, updatedLog, changes)}
+            />
           ))}
         </div>
 
@@ -180,8 +205,22 @@ if (!title || !date || !message) {
           <input className='title-input' type="text" placeholder="Titel" />
           <input className='date-input' type="date" />
           <textarea className='message-input' placeholder="Meddelande"/>
-          <input className='file-input' type="file" />
+          <input className='file-input' type="file" accept="image/*" multiple />
           <button className='add-log-button' onClick={() => handleAddLog()}>Lägg till</button>
+        </div>
+
+        {/* Gallery of all images on server */}
+        {/* <div className="all-images-gallery" style={{ marginTop: '2rem' }}>
+          <h2>Alla bilder</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.75rem' }}>
+            {allImages.map((img, i) => (
+              <img key={i} src={`http://localhost:3001/images/${img}`} alt={img} style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '.5rem' }} />
+            ))}
+          </div>
+        </div> */}
+
+        <div className='footer'>
+          <p>© 2025 DBP Develop</p>
         </div>
       </div>
     </>

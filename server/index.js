@@ -10,6 +10,8 @@ const PORT = 3001;
 
 app.use(cors());
 app.use(express.json());
+// Serve uploaded images statically from /images
+app.use('/images', express.static(path.join(__dirname, '../public/images')));
 
 // Multer setup för bilduppladdning
 const storage = multer.diskStorage({
@@ -49,6 +51,13 @@ app.post('/upload-image', upload.single('image'), (req, res) => {
   res.json({ message: 'Bild uppladdad!', filename: req.file.filename });
 });
 
+// Endpoint för att ladda upp flera bilder
+app.post('/upload-images', upload.array('images', 20), (req, res) => {
+  if (!req.files || req.files.length === 0) return res.status(400).json({ error: 'Inga bilder bifogade.' });
+  const filenames = req.files.map(f => f.filename);
+  res.json({ message: 'Bilder uppladdade!', filenames });
+});
+
 // Endpoint för att ta bort en bild
 app.delete('/delete-image/:filename', (req, res) => {
   const filename = req.params.filename;
@@ -56,6 +65,17 @@ app.delete('/delete-image/:filename', (req, res) => {
   fs.unlink(filePath, err => {
     if (err) return res.status(404).json({ error: 'Kunde inte hitta eller ta bort bilden.' });
     res.json({ message: 'Bild borttagen!' });
+  });
+});
+
+// Endpoint för att lista alla uppladdade bilder
+app.get('/images-list', (req, res) => {
+  const dirPath = path.join(__dirname, '../public/images');
+  fs.readdir(dirPath, (err, files) => {
+    if (err) return res.status(500).json({ error: 'Kunde inte läsa bildmappen.' });
+    // Filtrera till vanliga bildfiler
+    const imageFiles = files.filter(name => /\.(png|jpg|jpeg|gif|webp|bmp|svg)$/i.test(name));
+    res.json(imageFiles);
   });
 });
 

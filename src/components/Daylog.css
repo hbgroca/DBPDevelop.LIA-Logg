@@ -123,13 +123,24 @@
 .file{
     grid-area: file;
     font-weight: semibold;
+    width: 100%;
     max-width: 1280px;
-    max-height: 400px;
-    margin: 0rem auto;
+    max-height: 100%;
+}
+
+.file-grid{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-self: center;
+    flex-wrap: wrap;
+    gap: .5rem;
 
     .image{
-        max-width: 100%;
-        height: 100%;
+        width: 100%;
+        max-width: 260px;
+        height: 160px;
+        object-fit: cover;
         border-radius: .5rem;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         display: block;
