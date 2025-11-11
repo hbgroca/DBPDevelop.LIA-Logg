@@ -123,11 +123,19 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
+.sidebar-section{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
 .footer{
   text-align: center;
-  padding-top: 1rem;
+  padding-block: 1rem;
   font-size: 0.9rem;
   color: var(--muted);
+  margin-top: auto;
 }
 
 /* bottom add section styling */

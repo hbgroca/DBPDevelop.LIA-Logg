@@ -23,12 +23,11 @@ export default function DayLog({ title, date, message, files = [], onDelete, onU
   const [editedDate, setEditedDate] = useState(date);
   const [editedMessage, setEditedMessage] = useState(message);
   const [editedFiles, setEditedFiles] = useState(Array.isArray(files) ? files : (files ? [files] : []));
-  const [newFiles, setNewFiles] = useState([]); // File objects to upload
+  const [newFiles, setNewFiles] = useState([]); 
   const [removedFiles, setRemovedFiles] = useState([]);
 
   const handleEdit = () => {
     if (!isEditing) {
-      // Sync edit fields with current props when opening editor
       setEditedTitle(title);
       setEditedDate(date);
       setEditedMessage(message);

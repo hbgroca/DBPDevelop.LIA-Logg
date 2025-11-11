@@ -16,7 +16,6 @@ function App() {
       .then(response => response.json())
       .then(data => {
         if (Array.isArray(data)) {
-          // Backwards compatibility: transform single file -> files[]
           const normalized = data.map(l => ({
             ...l,
             files: Array.isArray(l.files) ? l.files : (l.file ? [l.file] : [])
@@ -71,7 +70,6 @@ if (!title || !date || !message) {
   }, 3000);
   return;
 }
-
     const prevLogs = [...logs];
 
     const fileInput = document.querySelector('.file-input');
@@ -143,8 +141,8 @@ if (!title || !date || !message) {
 
   // helpers to compute week index relative to first log (1..24)
   const getStartDate = () => {
-    if (logs.length === 0) return new Date();
-    // assume logs are already sorted ascending by date
+    if (logs.length === 0) 
+      return new Date();
     return new Date(logs[0].date);
   };
 
@@ -307,7 +305,7 @@ if (!title || !date || !message) {
               <div className="add-log-container">
                 <h2 className='error' style={{ display: 'none', color: 'var(--danger)' }}>Fyll i alla fält</h2>
                 <input className='title-input' type="text" placeholder="Titel" />
-                <input className='date-input' type="date" />
+                <input className='date-input' type="date" value={new Date().toISOString().split('T')[0]} />
                 <textarea className='message-input' placeholder="Meddelande"/>
                 <input className='file-input' type="file" accept="image/*" multiple />
                 <button className='add-log-button' onClick={() => handleAddLog()}>Lägg till</button>
