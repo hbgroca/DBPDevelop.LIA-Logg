@@ -5,6 +5,9 @@ import DayLog from './components/Daylog'
 function App() {
   const [logs, setLogs] = useState([]);
   const [allImages, setAllImages] = useState([]);
+  const [darkMode, setDarkMode] = useState(false);
+  const [selectedWeek, setSelectedWeek] = useState(null); // null = all
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Load logs from JSON file through node js backend
   useEffect(() => {
@@ -32,6 +35,25 @@ function App() {
       .then(setAllImages)
       .catch(err => console.error('Error fetching images list:', err));
   }, []);
+
+  // Load persisted theme choice
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('lia-theme');
+      if (saved === 'dark') setDarkMode(true);
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  // Persist theme choice
+  useEffect(() => {
+    try {
+      localStorage.setItem('lia-theme', darkMode ? 'dark' : 'light');
+    } catch (e) {
+      // ignore
+    }
+  }, [darkMode]);
 
 
   // Add new log
@@ -119,6 +141,51 @@ if (!title || !date || !message) {
       });
   }
 
+  // helpers to compute week index relative to first log (1..24)
+  const getStartDate = () => {
+    if (logs.length === 0) return new Date();
+    // assume logs are already sorted ascending by date
+    return new Date(logs[0].date);
+  };
+
+  const getWeekIndex = (dateStr) => {
+    const start = getStartDate();
+    if (!start) return null;
+    const d = new Date(dateStr);
+    // compute full-day difference
+    const diff = d.setHours(0,0,0,0) - new Date(start.getFullYear(), start.getMonth(), start.getDate()).setHours(0,0,0,0);
+    const week = Math.floor(diff / (7 * 24 * 3600 * 1000)) + 1;
+    if (week < 1) return 1;
+    if (week > 24) return 24;
+    return week;
+  };
+
+  const visibleLogs = selectedWeek ? logs.filter(l => getWeekIndex(l.date) === selectedWeek) : logs;
+
+  // compute week ranges (start/end dates) for sidebar labels
+  const formatDate = (d) => {
+    try {
+      return new Date(d).toLocaleDateString('sv-SE');
+    } catch (e) {
+      return d;
+    }
+  };
+
+  const weekRanges = (() => {
+    const start = getStartDate();
+    if (!start) return [];
+    const ranges = [];
+    const msWeek = 7 * 24 * 3600 * 1000;
+    // normalize start to midnight
+    const startMid = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    for (let w = 1; w <= 24; w++) {
+      const s = new Date(startMid.getTime() + (w - 1) * msWeek);
+      const e = new Date(s.getTime() + msWeek - 1);
+      ranges.push({ week: w, start: s, end: e });
+    }
+    return ranges;
+  })();
+
   const removeLog = (index) => {
     const toRemove = logs[index];
     const updatedLogs = [...logs];
@@ -176,52 +243,82 @@ if (!title || !date || !message) {
 
   return (
     <>
-      <div>
-        <div className="header">
-          <h1 className='header-title'>Aktivitetslogg</h1>
-          <div className="header-info">
-            <p>Projektgrupp 7</p>
-            <p>Robin Carlsson</p>
+      <div className={`app-root ${darkMode ? 'dark' : 'light'}`}>
+        <header className="header">
+          <div className="header-left">
+            <h1 className='header-title'>LIA-LOGG</h1>
+            <p className="header-sub">WIN24 | Robin Carlsson</p>
           </div>
-        </div>
-
-        <div className="log-container">
-          {logs.map((log, index) => (
-            <DayLog
-              key={index}
-              title={log.title}
-              date={log.date}
-              message={log.message}
-              files={log.files}
-              onDelete={() => removeLog(index)}
-              onUpdate={(updatedLog, changes) => saveEditedLog(index, updatedLog, changes)}
-            />
-          ))}
-        </div>
-
-        {/* Add new log */}
-        <div className="add-log-container">
-          <h2 className='error' style={{ display: 'none', color: 'red' }}>Fyll i alla fält</h2>
-          <input className='title-input' type="text" placeholder="Titel" />
-          <input className='date-input' type="date" />
-          <textarea className='message-input' placeholder="Meddelande"/>
-          <input className='file-input' type="file" accept="image/*" multiple />
-          <button className='add-log-button' onClick={() => handleAddLog()}>Lägg till</button>
-        </div>
-
-        {/* Gallery of all images on server */}
-        {/* <div className="all-images-gallery" style={{ marginTop: '2rem' }}>
-          <h2>Alla bilder</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.75rem' }}>
-            {allImages.map((img, i) => (
-              <img key={i} src={`http://localhost:3001/images/${img}`} alt={img} style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '.5rem' }} />
-            ))}
+          <div className="header-actions">
+            <button className="theme-toggle" onClick={() => setDarkMode(d => !d)}>{darkMode ? 'Tema - Mörkt' : 'Tema - Ljust'}</button>
           </div>
-        </div> */}
+        </header>
 
-        <div className='footer'>
-          <p>© 2025 DBP Develop</p>
+        <div className="app-body">
+          <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+            <div className="sidebar-section">
+              <h3>Veckor</h3>
+              <button className={`week-btn ${selectedWeek === null ? 'active' : ''}`} onClick={() => { setSelectedWeek(null); setSidebarOpen(false); }}>Alla</button>
+              <div className="weeks-list">
+                {weekRanges.map(wr => (
+                  <button
+                    key={wr.week}
+                    className={`week-btn ${selectedWeek === wr.week ? 'active' : ''}`}
+                    onClick={() => { setSelectedWeek(wr.week); setSidebarOpen(false); }}
+                    title={`${formatDate(wr.start)} — ${formatDate(wr.end)}`}
+                  >
+                    <div className="week-label">Vecka {wr.week}</div>
+                    <div className="week-dates">{formatDate(wr.start)} — {formatDate(wr.end)}</div>
+                  </button>
+                ))}
+              </div>
+              <div className='footer'>
+                <p>© 2025 DBP Develop</p>
+              </div>
+            </div>
+          </aside>
+
+          <main className="main-content">
+            <div className="mobile-controls">
+              <button className="sidebar-toggle" onClick={() => setSidebarOpen(s => !s)}>{sidebarOpen ? 'Stäng veckor' : 'Visa veckor'}</button>
+              <div style={{ flex: 1 }} />
+              <div className="mobile-selected">{selectedWeek ? `Vecka ${selectedWeek}` : 'Alla'}</div>
+            </div>
+
+            <div className="log-container">
+              {visibleLogs.length === 0 ? (
+                <div className="empty">Ingen logg för vald vecka</div>
+              ) : (
+                visibleLogs.map((log, index) => (
+                  <DayLog
+                    key={index}
+                    title={log.title}
+                    date={log.date}
+                    message={log.message}
+                    files={log.files}
+                    onDelete={() => removeLog(index)}
+                    onUpdate={(updatedLog, changes) => saveEditedLog(index, updatedLog, changes)}
+                  />
+                ))
+              )}
+            </div>
+
+            <div>
+              <div className="add-log-container">
+                <h2 className='error' style={{ display: 'none', color: 'var(--danger)' }}>Fyll i alla fält</h2>
+                <input className='title-input' type="text" placeholder="Titel" />
+                <input className='date-input' type="date" />
+                <textarea className='message-input' placeholder="Meddelande"/>
+                <input className='file-input' type="file" accept="image/*" multiple />
+                <button className='add-log-button' onClick={() => handleAddLog()}>Lägg till</button>
+              </div>
+
+              
+            </div>
+          </main>
         </div>
+
+        
       </div>
     </>
   )

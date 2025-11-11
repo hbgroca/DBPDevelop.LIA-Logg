@@ -1,39 +1,60 @@
 .header
 {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-  margin: 1rem 0;
+  /* top header area (kept minimal) */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  gap: 1rem;
+  border-bottom: 1px solid var(--muted);
+  background: var(--surface);
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+  }
 
   .header-title{
-    grid-row: 1;
-    grid-column: 1;
+    font-size: 1.25rem;
+    margin: 0;
   }
 
-  .header-info{
-    grid-row: 1;
-    grid-column: 1;
-    font-size: 1rem;
-    font-weight: normal;
-    margin-top: .5rem;
-    text-align: right;
-    margin-right: 1rem;
+  .header-sub{
+    font-size: 0.9rem;
+    margin: 0.25rem 0 0 0;
+    color: var(--muted);
   }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+
 }
 
 .log-container{
-  border: 1px solid #ccc;
-  padding: 1rem;
+  padding: 1rem 0;
   gap: 1rem;
   display: flex;
   flex-direction: column;
+  overflow: auto;
+  
+  flex: 1 1 auto;
+  min-height: 0; 
+
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  scrollbar-color: transparent transparent;
+
+  &:hover {
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted) transparent;
+  }
 }
 
 .add-log-container{
-  border: 1px solid #ccc;
+  border: 1px solid var(--muted);
   display: grid;
   grid-template-areas: 'title message'
                        'date message'
@@ -43,16 +64,15 @@
   grid-template-rows: auto auto auto auto;
   gap: 1rem 2rem;
   padding: 1rem;
+  margin-bottom: 1rem;
 }
-
-
 
 .title-input{
   grid-area: title;
   font-size: 1.1rem;
   font-weight: bold;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid var(--muted);
   padding: 0.5rem;
   width: 100%;
 }
@@ -62,7 +82,7 @@
   font-size: 1.1rem;
   font-weight: semibold;
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid var(--muted);
   padding: 0.5rem;
   width: 100%;
 }
@@ -72,9 +92,9 @@
   font-size: 1.1rem;
   /* font-weight: semibold; */
   border: none;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid var(--muted);
   padding: 0.5rem;
-  width: 100%;
+  /* width: 100%; */
 }
 
 .add-log-button{
@@ -82,8 +102,8 @@
   font-size: 1.1rem;
   font-weight: bold;
   border: none;
-  background-color: #4CAF50;
-  color: white;
+  background-color: var(--primary);
+  color: var(--on-primary);
   padding: 0.5rem 1rem;
   cursor: pointer;
   width: 100%;
@@ -99,13 +119,196 @@
 }
 
 .add-log-button:hover{
-  background-color: #45a049;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  filter: brightness(.95);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .footer{
   text-align: center;
-  margin: 1rem 0;
+  padding-top: 1rem;
   font-size: 0.9rem;
-  color: #777;
+  color: var(--muted);
+}
+
+/* bottom add section styling */
+.add-log-section.bottom{
+  padding: 1rem;
+  border-top: 1px solid var(--muted);
+  background: var(--surface);
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: .75rem;
+  align-items: start;
+}
+
+.add-log-section.bottom .title-input,
+.add-log-section.bottom .date-input,
+.add-log-section.bottom .message-input,
+.add-log-section.bottom .file-input{
+  border-bottom: 2px solid var(--muted);
+  padding: .5rem;
+}
+
+@media (max-width: 900px) {
+  .add-log-section.bottom{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* App layout */
+:root{
+  --bg: #f7f7f7;
+  --surface: #ffffff;
+  --text: #111827;
+  --muted: #9aa4b2;
+  --primary: #4CAF50;
+  --on-primary: #ffffff;
+  --danger: #ff4d4d;
+  --nth-background: #f5ecff;
+}
+
+.app-root{
+  background: var(--bg);
+  color: var(--text);
+  min-height: calc(100vh - 1rem);
+}
+
+.app-root.dark{
+  --bg: #0b0f14;
+  --surface: #0f1720;
+  --text: #e6eef6;
+  --muted: #9aa4b2;
+  --primary: #2563eb;
+  --on-primary: #ffffff;
+  --danger: #ff6b6b;
+  --nth-background: #1f2937;
+  background: var(--bg);
+}
+
+.app-body{
+  display: flex;
+}
+
+.sidebar{
+  width: 220px;
+  padding: 1rem;
+  border-right: 1px solid var(--muted);
+  background: transparent;
+  height: calc(100svh - 110px);
+  overflow-y: auto;
+  transition: width 220ms ease;
+  
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  scrollbar-color: transparent transparent;
+
+  &:hover {
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted) transparent;
+  }
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+
+  &:hover {
+    display: block;
+  }
+}
+
+.sidebar .week-dates{
+  font-size: .75rem;
+  color: var(--muted);
+}
+
+.sidebar.open{
+  background: var(--surface);
+}
+
+.main-content{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem;
+  justify-content: space-between;
+  max-height: calc(100svh - 77px);
+  min-height: 0;   
+}
+
+.mobile-controls{
+  display: none;
+  gap: .5rem;
+  align-items: center;
+  margin-block: .5rem;
+}
+
+.sidebar-toggle{
+  padding: .5rem .75rem;
+  border-radius: .375rem;
+  border: 1px solid var(--muted);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.mobile-selected{
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.week-btn{
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: .5rem .75rem;
+  margin: .25rem 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+.week-btn.active{
+  background: var(--primary);
+  color: var(--on-primary);
+  border-radius: .375rem;
+}
+.week-btn.active .week-dates{
+  color: var(--on-primary);
+}
+
+.theme-toggle{
+  padding: .5rem .75rem;
+  border-radius: .375rem;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.empty{
+  padding: 2rem;
+  text-align: center;
+  color: var(--muted);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+/* small responsive */
+@media (max-width: 900px) {
+  .app-body{ flex-direction: column; min-height: calc(100svh - 77px);}
+  .sidebar{ border-right: none; min-height: 0.6rem; max-height: 0; overflow: hidden; transition: max-height 220ms ease; }
+  .sidebar.open{ width: 100%; max-height: 1000px; }
+  .mobile-controls{ display: flex; }
+  .weeks-list{ display: grid; grid-template-columns: repeat(2, 1fr); gap: .25rem; }
+  .main-content{ max-height: none; }
+  .app-root{
+    min-height: 100svh;
+  }
+}
+
+@media (max-height: 1000px) {
+  .main-content{ max-height: none; }
 }

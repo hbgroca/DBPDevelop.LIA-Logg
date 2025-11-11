@@ -10,11 +10,11 @@
     padding: 1rem;
     border: 1px solid #ccc;
     border-radius: .5rem;
-    background-color: rgb(246, 255, 236);
+        background-color: var(--surface);
 
-    &:nth-child(even) {
-    background-color: rgb(255, 242, 238);
-  }
+        &:nth-child(even) {
+            background-color: var(--nth-background);
+        }
 }
 
 .edit-container{
@@ -33,7 +33,7 @@
         font-size: 1.2rem;
         font-weight: bold;
         border: none;
-        border-bottom: 2px solid #ccc;
+        border-bottom: 2px solid var(--muted);
     }
     .edit-date{
         padding: 0.5rem;
@@ -41,13 +41,13 @@
         font-size: 1.1rem;
         font-weight: semibold;
         border: none;
-        border-bottom: 2px solid #ccc;
+        border-bottom: 2px solid var(--muted);
     }
     .edit-message{
         margin-top: 3rem;
         grid-area: message;
         font-size: 1.1rem;
-        border: none;
+    border: none;
         border-bottom: 2px solid #ccc;
         padding: 0.5rem;
         width: 100%;
@@ -69,8 +69,8 @@
     right: 1rem;
 
     .save-button{
-        background-color: #4CAF50;
-        color: white;
+    background-color: var(--primary);
+    color: var(--on-primary);
         border: none;
         border-radius: .5rem;
         padding: .5rem 1rem;
@@ -80,13 +80,13 @@
         margin-right: .5rem;
 
         &:hover {
-            background-color: #45a049;
+            background-color: #218838;
         }
     }
 
     .cancel-button{
-        background-color: #f44336;
-        color: white;
+    background-color: var(--danger);
+    color: #fff;
         border: none;
         border-radius: .5rem;
         padding: .5rem 1rem;
@@ -95,7 +95,7 @@
         transition: background-color 0.3s;
 
         &:hover {
-            background-color: #da190b;
+            background-color: #c62828;
         }
     }
 }
@@ -142,12 +142,12 @@
         height: 160px;
         object-fit: cover;
         border-radius: .5rem;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
         display: block;
         margin: 0rem auto;
-        transition: transform 0.3s;
+        transition: transform 0.2s;
         &:hover {
-            transform: scale(1.005);
+            transform: scale(1.01);
             cursor: pointer;
         }
     }
@@ -167,13 +167,14 @@
 }
 
 .image-modal-content {
-    background: #fff;
+    background: var(--surface);
+    color: var(--text);
     border-radius: 1rem;
     max-width: 1920px;
     width: 90vw;
     max-height: 90vh;
     padding: 1rem;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.3);
     display: flex;
     flex-direction: column;
     align-items: center;

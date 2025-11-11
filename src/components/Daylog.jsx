@@ -14,6 +14,7 @@ export default function DayLog({ title, date, message, files = [], onDelete, onU
   };
   const confirmDelete = () => {
     onDelete();
+    setIsDeleting(false);
   };
 
   // Edit values
