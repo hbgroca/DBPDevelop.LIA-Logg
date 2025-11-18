@@ -305,7 +305,7 @@ if (!title || !date || !message) {
               <div className="add-log-container">
                 <h2 className='error' style={{ display: 'none', color: 'var(--danger)' }}>Fyll i alla fält</h2>
                 <input className='title-input' type="text" placeholder="Titel" />
-                <input className='date-input' type="date" value={new Date().toISOString().split('T')[0]} />
+                <input className='date-input' type="date" />
                 <textarea className='message-input' placeholder="Meddelande"/>
                 <input className='file-input' type="file" accept="image/*" multiple />
                 <button className='add-log-button' onClick={() => handleAddLog()}>Lägg till</button>
