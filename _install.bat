@@ -19,5 +19,16 @@ if %errorlevel% neq 0 (
 cd ..
 
 echo.
+echo Skapar nödvändiga mappar och filer...
+if not exist "public\images" (
+    mkdir "public\images"
+    echo Skapade public\images
+)
+if not exist "public\data.json" (
+    echo [] > "public\data.json"
+    echo Skapade public\data.json
+)
+
+echo.
 echo Installation klar! Starta appen med _startBackend.bat och _startFrontend.bat.
 pause
