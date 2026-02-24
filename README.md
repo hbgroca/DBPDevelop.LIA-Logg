@@ -12,31 +12,13 @@ Applikationen kräver att både frontend och backend körs samtidigt.
 
 ### Installation
 
-**Steg 1 – Installera frontend-paket** (i rotkatalogen):
-```bash
-npm install
-```
-
-**Steg 2 – Installera backend-paket** (i `server/`-katalogen):
-```bash
-cd server && npm install
-```
+Kör `_install.bat` för att installera alla nödvändiga paket och skapa datamappar automatiskt.
 
 ### Starta applikationen
 
-**Backend** (port 3001) – kör i ett terminalfönster:
-```bash
-cd server && node index.js
-```
-
-**Frontend** (port 5173) – kör i ett annat terminalfönster:
-```bash
-npm run dev
-```
-
-Öppna sedan [http://localhost:5173](http://localhost:5173) i din webbläsare.
-
-Du kan även använda genvägarna `_install.bat`, `_startBackend.bat` och `_startFrontend.bat` på Windows.
+1. Kör `_startBackend.bat`
+2. Kör `_startFrontend.bat`
+3. Öppna [http://localhost:5173](http://localhost:5173) i din webbläsare.
 
 ## Viktigt
 
