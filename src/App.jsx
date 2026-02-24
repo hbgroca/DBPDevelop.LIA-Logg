@@ -154,7 +154,7 @@ if (!title || !date || !message) {
     const diff = d.setHours(0,0,0,0) - new Date(start.getFullYear(), start.getMonth(), start.getDate()).setHours(0,0,0,0);
     const week = Math.floor(diff / (7 * 24 * 3600 * 1000)) + 1;
     if (week < 1) return 1;
-    if (week > 24) return 24;
+    if (week > 28) return 28;
     return week;
   };
 
@@ -176,7 +176,7 @@ if (!title || !date || !message) {
     const msWeek = 7 * 24 * 3600 * 1000;
     // normalize start to midnight
     const startMid = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-    for (let w = 1; w <= 24; w++) {
+    for (let w = 1; w <= 28; w++) {
       const s = new Date(startMid.getTime() + (w - 1) * msWeek);
       const e = new Date(s.getTime() + msWeek - 1);
       ranges.push({ week: w, start: s, end: e });
@@ -287,17 +287,20 @@ if (!title || !date || !message) {
               {visibleLogs.length === 0 ? (
                 <div className="empty">Ingen logg för vald vecka</div>
               ) : (
-                visibleLogs.map((log, index) => (
-                  <DayLog
-                    key={index}
-                    title={log.title}
-                    date={log.date}
-                    message={log.message}
-                    files={log.files}
-                    onDelete={() => removeLog(index)}
-                    onUpdate={(updatedLog, changes) => saveEditedLog(index, updatedLog, changes)}
-                  />
-                ))
+                visibleLogs.map((log) => {
+                  const realIndex = logs.findIndex(l => l === log);
+                  return (
+                    <DayLog
+                      key={realIndex}
+                      title={log.title}
+                      date={log.date}
+                      message={log.message}
+                      files={log.files}
+                      onDelete={() => removeLog(realIndex)}
+                      onUpdate={(updatedLog, changes) => saveEditedLog(realIndex, updatedLog, changes)}
+                    />
+                  );
+                })
               )}
             </div>
 
